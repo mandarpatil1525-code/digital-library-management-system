@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Book Form')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container" style="max-width:640px">
+  <h1 th:text="${book.id == null} ? 'Add New Book' : 'Edit Book'"></h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="card">
+    <form th:action="@{/admin/books/save}" method="post">
+      <input type="hidden" name="id" th:value="${book.id}">
+      <label>Title</label><input name="title" th:value="${book.title}" required>
+      <label>Author</label><input name="author" th:value="${book.author}" required>
+      <label>ISBN</label><input name="isbn" th:value="${book.isbn}" required>
+      <label>Category</label><input name="category" th:value="${book.category}" required placeholder="e.g. Fiction, Science, Programming">
+      <label>Quantity (total copies)</label><input type="number" min="0" name="quantity" th:value="${book.id == null} ? 1 : ${book.quantity}" required>
+      <p class="actions"><button type="submit">Save</button><a class="btn sec" th:href="@{/admin/books}">Cancel</a></p>
+    </form>
+  </div>
+</div>
+</body>
+</html>

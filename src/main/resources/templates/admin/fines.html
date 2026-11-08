@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Fines')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>Fine Management</h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <p class="muted" th:text="'Total pending (returned books): ₹' + ${pending} + ' · Rate: ₹5 per overdue day'"></p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Member</th><th>Book</th><th>Due</th><th>Returned</th><th>Fine</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="i : ${fines}">
+        <td th:text="${i.user.name}"></td><td th:text="${i.book.title}"></td>
+        <td th:text="${i.dueDate}"></td>
+        <td th:text="${i.returnDate != null} ? ${i.returnDate} : 'Not returned'"></td>
+        <td th:text="'₹' + ${i.currentFine}"></td>
+        <td>
+          <span th:if="${i.returnDate == null}" class="badge b-warn">Accruing</span>
+          <span th:if="${i.returnDate != null and i.finePaid}" class="badge b-ok">Paid</span>
+          <span th:if="${i.returnDate != null and !i.finePaid}" class="badge b-err">Unpaid</span>
+        </td>
+        <td><form class="inline" th:if="${i.returnDate != null and !i.finePaid}" th:action="@{/admin/fines/pay/{id}(id=${i.id})}" method="post">
+          <button class="ok" type="submit">Mark paid</button></form></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(fines)}"><td colspan="7" class="muted">No fines.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</body>
+</html>

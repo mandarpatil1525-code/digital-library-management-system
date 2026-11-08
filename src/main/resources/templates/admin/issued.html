@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Issued Books')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>Currently Issued Books</h1>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Book</th><th>Member</th><th>Email</th><th>Issued</th><th>Due date</th><th>Status</th><th>Fine so far</th></tr></thead>
+    <tbody>
+      <tr th:each="i : ${issues}">
+        <td th:text="${i.book.title}"></td><td th:text="${i.user.name}"></td><td th:text="${i.user.email}"></td>
+        <td th:text="${i.issueDate}"></td><td th:text="${i.dueDate}"></td>
+        <td><span th:if="${i.overdue}" class="badge b-err" th:text="'Overdue ' + ${i.overdueDays()} + ' d'"></span>
+            <span th:unless="${i.overdue}" class="badge b-warn">On loan</span></td>
+        <td th:text="${i.currentFine > 0} ? '₹' + ${i.currentFine} : '—'"></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(issues)}"><td colspan="7" class="muted">No books are currently issued.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</body>
+</html>

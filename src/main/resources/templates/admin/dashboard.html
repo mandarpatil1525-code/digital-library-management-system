@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>Admin Dashboard</h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="stats">
+    <div class="stat"><b th:text="${stats.books}"></b><span>Book titles</span></div>
+    <div class="stat"><b th:text="${stats.members}"></b><span>Members</span></div>
+    <div class="stat"><b th:text="${stats.issued}"></b><span>Currently issued</span></div>
+    <div class="stat"><b th:text="${stats.overdue}"></b><span>Overdue</span></div>
+    <div class="stat"><b th:text="'₹' + ${stats.pendingFines}"></b><span>Pending fines</span></div>
+    <div class="stat"><b th:text="${stats.messages}"></b><span>Messages</span></div>
+  </div>
+  <div class="card actions">
+    <a class="btn" th:href="@{/admin/books/new}">+ Add Book</a>
+    <a class="btn sec" th:href="@{/admin/issued}">View Issued Books</a>
+    <a class="btn sec" th:href="@{/admin/members}">Manage Members</a>
+    <a class="btn sec" th:href="@{/admin/fines}">Manage Fines</a>
+    <a class="btn sec" th:href="@{/admin/messages}">Read Messages</a>
+  </div>
+</div>
+</body>
+</html>

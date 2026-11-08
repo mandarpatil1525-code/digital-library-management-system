@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Messages')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>Member Messages</h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="card" th:each="m : ${messages}">
+    <div class="actions" style="justify-content:space-between">
+      <strong th:text="${m.subject}">Subject</strong>
+      <form class="inline" th:action="@{/admin/messages/delete/{id}(id=${m.id})}" method="post" onsubmit="return confirm('Delete message?')">
+        <button class="danger" type="submit">Delete</button></form>
+    </div>
+    <p class="muted" th:text="${m.name} + ' (' + ${m.email} + ') · ' + ${#temporals.format(m.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+    <p th:text="${m.message}" style="white-space:pre-wrap"></p>
+  </div>
+  <p class="muted" th:if="${#lists.isEmpty(messages)}">No messages yet.</p>
+</div>
+</body>
+</html>

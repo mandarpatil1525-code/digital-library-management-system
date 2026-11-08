@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' · Digital Library'">Library</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:fragment="nav" class="nav">
+  <a class="brand" th:href="@{/}">📚 Digital Library</a>
+  <th:block th:if="${session.user != null and session.user.role == 'ADMIN'}">
+    <a th:href="@{/admin/dashboard}">Dashboard</a>
+    <a th:href="@{/admin/books}">Books</a>
+    <a th:href="@{/admin/issued}">Issued</a>
+    <a th:href="@{/admin/members}">Members</a>
+    <a th:href="@{/admin/fines}">Fines</a>
+    <a th:href="@{/admin/messages}">Messages</a>
+  </th:block>
+  <th:block th:if="${session.user != null and session.user.role == 'USER'}">
+    <a th:href="@{/user/catalog}">Catalogue</a>
+    <a th:href="@{/user/my-books}">My Books</a>
+    <a th:href="@{/user/contact}">Contact</a>
+  </th:block>
+  <span class="spacer"></span>
+  <th:block th:if="${session.user != null}">
+    <span class="who" th:text="${session.user.name}">Name</span>
+    <a th:href="@{/logout}">Logout</a>
+  </th:block>
+  <th:block th:if="${session.user == null}">
+    <a th:href="@{/login}">Login</a>
+    <a th:href="@{/register}">Register</a>
+  </th:block>
+</nav>
+<div th:fragment="flash">
+  <div class="alert ok" th:if="${msg}" th:text="${msg}"></div>
+  <div class="alert err" th:if="${err}" th:text="${err}"></div>
+</div>
+</body>
+</html>

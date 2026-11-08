@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My Books')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>My Books</h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="alert err" th:if="${unpaid > 0}" th:text="'You have an unpaid fine of ₹' + ${unpaid} + '. Please pay at the library desk to issue new books.'"></div>
+
+  <h2>Issued &amp; History</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Book</th><th>Issued</th><th>Due</th><th>Returned</th><th>Fine</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="i : ${issues}">
+        <td th:text="${i.book.title}"></td>
+        <td th:text="${i.issueDate}"></td>
+        <td th:text="${i.dueDate}"></td>
+        <td th:text="${i.returnDate != null} ? ${i.returnDate} : '—'"></td>
+        <td th:text="${i.currentFine > 0} ? '₹' + ${i.currentFine} : '—'"></td>
+        <td>
+          <span th:if="${i.returnDate == null and !i.overdue}" class="badge b-warn">Issued</span>
+          <span th:if="${i.overdue}" class="badge b-err">Overdue</span>
+          <span th:if="${i.returnDate != null and i.fine == 0}" class="badge b-ok">Returned</span>
+          <span th:if="${i.returnDate != null and i.fine > 0 and i.finePaid}" class="badge b-ok">Fine paid</span>
+          <span th:if="${i.returnDate != null and i.fine > 0 and !i.finePaid}" class="badge b-err">Fine due</span>
+        </td>
+        <td>
+          <form class="inline" th:if="${i.returnDate == null}" th:action="@{/user/return/{id}(id=${i.id})}" method="post">
+            <button type="submit">Return</button></form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(issues)}"><td colspan="7" class="muted">You have not issued any books yet.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>My Reservations</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Book</th><th>Reserved on</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="b : ${bookings}">
+        <td th:text="${b.book.title}"></td>
+        <td th:text="${b.bookingDate}"></td>
+        <td>
+          <span th:if="${b.status == 'ACTIVE' and b.book.available > 0}" class="badge b-ok">Ready – issue it now!</span>
+          <span th:if="${b.status == 'ACTIVE' and b.book.available == 0}" class="badge b-warn">Waiting</span>
+          <span th:if="${b.status != 'ACTIVE'}" class="badge b-gray" th:text="${b.status}"></span>
+        </td>
+        <td>
+          <th:block th:if="${b.status == 'ACTIVE'}">
+            <form class="inline" th:if="${b.book.available > 0}" th:action="@{/user/issue/{id}(id=${b.book.id})}" method="post">
+              <button class="ok" type="submit">Issue</button></form>
+            <form class="inline" th:action="@{/user/cancel-booking/{id}(id=${b.id})}" method="post">
+              <button class="danger" type="submit">Cancel</button></form>
+          </th:block>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(bookings)}"><td colspan="4" class="muted">No reservations.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</body>
+</html>

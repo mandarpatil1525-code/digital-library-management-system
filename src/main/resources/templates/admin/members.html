@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Members')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div class="container">
+  <h1>Registered Members</h1>
+  <div th:replace="~{fragments :: flash}"></div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Joined</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="m : ${members}">
+        <td th:text="${m.id}"></td><td th:text="${m.name}"></td><td th:text="${m.email}"></td>
+        <td th:text="${#temporals.format(m.createdAt, 'yyyy-MM-dd')}"></td>
+        <td><span th:if="${m.active}" class="badge b-ok">Active</span><span th:unless="${m.active}" class="badge b-err">Disabled</span></td>
+        <td><form class="inline" th:action="@{/admin/members/toggle/{id}(id=${m.id})}" method="post">
+          <button th:class="${m.active} ? 'danger' : 'ok'" type="submit" th:text="${m.active} ? 'Disable' : 'Enable'"></button></form></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(members)}"><td colspan="6" class="muted">No members yet.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+</body>
+</html>
